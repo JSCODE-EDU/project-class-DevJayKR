@@ -33,7 +33,7 @@ export class PostsController {
     return await this.postsService.deletePost(id);
   }
 
-  @Post('/search/:title')
+  @Get('/search/:title')
   async searchTitle(@Param('title') title: string): Promise<Posts[]> {
     return await this.postsService.searchTitle(title);
   }
