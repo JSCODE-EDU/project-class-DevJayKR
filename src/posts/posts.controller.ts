@@ -3,6 +3,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Posts } from './entity/posts.entity';
+import { FindTitleParam } from './dto/find-title-param';
 
 @Controller('posts')
 export class PostsController {
@@ -34,7 +35,7 @@ export class PostsController {
   }
 
   @Get('/search/:title')
-  async searchTitle(@Param('title') title: string): Promise<Posts[]> {
-    return await this.postsService.searchTitle(title);
+  async searchTitle(@Param() param: FindTitleParam): Promise<Posts[]> {
+    return await this.postsService.searchTitle(param.title);
   }
 }
