@@ -17,7 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         autoLoadEntities: true,
         synchronize: true,
-        timezone: '+09:00',
+        timezone: 'Z',
       }),
     }),
   ],
