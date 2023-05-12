@@ -16,7 +16,7 @@ export class PostsService {
     const post = await this.postRepository.exist({ where: { id } });
 
     if (post) return true;
-    else throw new NotFoundException('존재하지 않는 게시글입니다.');
+    throw new NotFoundException('존재하지 않는 게시글입니다.');
   }
 
   async createPost(dto: CreatePostDto): Promise<Posts> {
@@ -32,6 +32,7 @@ export class PostsService {
 
   async findOnePostById(id: number): Promise<Posts> {
     await this.isExist(id);
+
     return await this.postRepository.findOneBy({ id });
   }
 
