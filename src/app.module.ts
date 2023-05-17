@@ -5,6 +5,7 @@ import { validationSchema } from './config/validationSchema';
 import { DatabaseModule } from './database/database.module';
 import { PostsModule } from './posts/posts.module';
 import appConfig from './config/app.config';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -13,11 +14,12 @@ import appConfig from './config/app.config';
       isGlobal: true,
       validationSchema,
       load: [appConfig],
+      envFilePath: `${process.cwd()}/src/config/env/${process.env.NODE_ENV}.env`,
     }),
     DatabaseModule,
     PostsModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

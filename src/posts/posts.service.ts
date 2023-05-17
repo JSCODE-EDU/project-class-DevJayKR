@@ -15,7 +15,7 @@ export class PostsService {
   async isExist(id: number) {
     const post = await this.postRepository.exist({ where: { id } });
 
-    if (post) return true;
+    if (post) return post;
     throw new NotFoundException('존재하지 않는 게시글입니다.');
   }
 
