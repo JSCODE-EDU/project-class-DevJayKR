@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Posts } from './entity/posts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
@@ -12,6 +12,13 @@ export class PostsService {
     private postRepository: Repository<Posts>,
   ) {}
 
+  async isExist(id: number) {
+    const post = await this.postRepository.exist({ where: { id } });
+
+    if (post) return post;
+    throw new NotFoundException('존재하지 않는 게시글입니다.');
+  }
+
   async createPost(dto: CreatePostDto): Promise<Posts> {
     const newPost = this.postRepository.create(dto);
     await this.postRepository.save(newPost);
@@ -24,12 +31,15 @@ export class PostsService {
   }
 
   async findOnePostById(id: number): Promise<Posts> {
+    await this.isExist(id);
+
     return await this.postRepository.findOneBy({ id });
   }
 
   async updatePost(id: number, dto: UpdatePostDto): Promise<Posts> {
-    const { title, detail } = dto;
+    await this.isExist(id);
 
+    const { title, detail } = dto;
     await this.postRepository.update(id, {
       title,
       detail,
@@ -39,8 +49,9 @@ export class PostsService {
   }
 
   async deletePost(id: number): Promise<Posts> {
-    const post = await this.findOnePostById(id);
+    await this.isExist(id);
 
+    const post = await this.findOnePostById(id);
     await this.postRepository.softDelete(id);
 
     return post;
