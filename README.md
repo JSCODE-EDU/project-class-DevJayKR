@@ -15,4 +15,4 @@
 
 이 프로젝트는 NestJS CLI에 Swagger 플러그인을 사용하여 API 문서를 구성 했습니다.
 
-> 웹 서버를 실행 시킨 뒤에 [http://localhost:3000/docs](http://localhost:3000/docs)로 이동하여 문서를 확인할 수 있습니다.
+> 웹 서버를 실행 시킨 뒤에 [http://localhost:8080/docs](http://localhost:8080/docs)로 이동하여 문서를 확인할 수 있습니다.
