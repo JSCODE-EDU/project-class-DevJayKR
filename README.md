@@ -7,9 +7,32 @@
 
 1. 이 레포지토리를 클론합니다.
 2. npm install 커맨드로 의존성 모듈을 설치합니다.
-3. src/config 폴더의 validationSchema를 참고하여 프로젝트 루트 경로에 .env 파일을 세팅합니다.
-4. docker-compose up -d 커맨드로 mysql을 도커 컨테이너에 백그라운드로 실행합니다.
+3. 아래 목차중 환경 변수 예시 부분을 참고하여 src/config/env 경로에 development.env 파일을 준비 합니다.
+
+   주의: 프로젝트 실행 시 NODE_ENV 환경 변수에 의하여 env 파일을 찾습니다. 예로 NODE_ENV=development 라면 src/config/env/development.env 파일이 환경 변수로 사용됩니다.
+
+4. docker-compose up -d 커맨드로 mysql을 도커 환경으로 실행합니다.
 5. npm run start:dev 커맨드로 웹 서버를 실행시킵니다.
+
+## 환경 변수 예시
+
+```
+# SERVER
+SERVER_PORT=8080
+
+# MYSQL
+MYSQL_ROOT_USER=rootuser
+MYSQL_ROOT_PASSWORD=rootpassword
+MYSQL_HOST=localhost 또는 컨테이너 명
+MYSQL_PORT=3306
+MYSQL_USER=dbuser
+MYSQL_PASSWORD=dbpassword
+MYSQL_DATABASE=dbname
+
+# JWT
+ACCESS_SECRET_KEY=accesskey
+ACCESS_EXPIRE_TIME=1800000ms
+```
 
 ## API DOCS
 
