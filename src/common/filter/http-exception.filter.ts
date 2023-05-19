@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 @Catch(HttpException)
@@ -8,12 +8,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
+    const error = exception.getResponse() as string | { error: string; statusCode: number; message: string | string[] };
 
-    response.status(status).json({
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      message: '알 수 없는 에러가 발생했습니다.',
-    });
+    if (typeof error === 'string') {
+      response.status(status).json({
+        success: false,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        error,
+      });
+    } else {
+      response.status(status).json({
+        success: false,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        ...error,
+      });
+    }
   }
 }
