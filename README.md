@@ -11,7 +11,10 @@
 
    주의: 프로젝트 실행 시 NODE_ENV 환경 변수에 의하여 env 파일을 찾습니다. 예로 NODE_ENV=development 라면 src/config/env/development.env 파일이 환경 변수로 사용됩니다.
 
-4. docker-compose up -d 커맨드로 mysql을 도커 환경으로 실행합니다.
+4. npm run start:db 커맨드로 환경 변수를 주입하고 mysql을 도커 환경으로 실행합니다.
+
+주의: 기본적으로 src/config/env/development.env 파일이 환경 변수로 사용됩니다.
+
 5. npm run start:dev 커맨드로 웹 서버를 실행시킵니다.
 
 ## 환경 변수 예시

@@ -24,8 +24,6 @@ describe('PostsService', () => {
     ),
   };
 
-  // 테스트 코드를 이렇게 짜는 것이 맞나?
-
   beforeEach(async () => {
     mockDatabase = [];
 
