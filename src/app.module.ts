@@ -6,6 +6,10 @@ import { DatabaseModule } from './database/database.module';
 import { PostsModule } from './posts/posts.module';
 import appConfig from './config/app.config';
 import { AppController } from './app.controller';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { JwtModule } from './jwt/jwt.module';
+import jwtConfig from './config/jwt.config';
 
 @Module({
   imports: [
@@ -13,11 +17,14 @@ import { AppController } from './app.controller';
       cache: true,
       isGlobal: true,
       validationSchema,
-      load: [appConfig],
+      load: [appConfig, jwtConfig],
       envFilePath: `${process.cwd()}/src/config/env/${process.env.NODE_ENV}.env`,
     }),
     DatabaseModule,
     PostsModule,
+    AuthModule,
+    UsersModule,
+    JwtModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,4 +12,8 @@ export const validationSchema = Joi.object({
   MYSQL_USER: Joi.string().required(),
   MYSQL_PASSWORD: Joi.string().required(),
   MYSQL_DATABASE: Joi.string().required(),
+
+  // JWT
+  ACCESS_SECRET_KEY: Joi.string().required(),
+  ACCESS_EXPIRE_TIME: Joi.string().required(),
 });
