@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  const config = new DocumentBuilder().addBearerAuth().setTitle('익명 게시판 API').setDescription('By DevJayKR').setVersion('1.0').build();
+  const config = new DocumentBuilder().addBearerAuth().setTitle('게시판 API').setDescription('By DevJayKR').setVersion('1.0').build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
     swaggerOptions: { defaultModelsExpandDepth: -1 },
