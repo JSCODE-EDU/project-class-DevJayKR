@@ -9,6 +9,7 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from './jwt/jwt.module';
+import { CommentModule } from './comment/comment.module';
 import jwtConfig from './config/jwt.config';
 
 @Module({
@@ -25,6 +26,7 @@ import jwtConfig from './config/jwt.config';
     AuthModule,
     UsersModule,
     JwtModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
