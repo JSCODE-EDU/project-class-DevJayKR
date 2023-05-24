@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Posts } from './entity/posts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsRelations, Like, Relation, RelationOptions, Repository } from 'typeorm';
+import { FindOptionsRelations, Like, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { User } from 'src/users/entity/user.entity';
@@ -51,25 +51,24 @@ export class PostsService {
     await this.isExist(id);
 
     const post = await this.postRepository
-      .createQueryBuilder('posts')
-      .leftJoin('posts.author', 'a')
-      .leftJoin('posts.comments', 'c')
-      .innerJoin('c.user', 'cu')
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.user', 'comments_user')
+      .orderBy('comments.createdAt', 'ASC')
       .select([
-        'posts.id',
-        'posts.title',
-        'posts.detail',
-        'posts.createdAt',
-        'posts.updatedAt',
-        'posts.deletedAt',
-        'a.id',
-        'a.email',
-        'c.createdAt',
-        'c.comment',
-        'cu.id',
-        'cu.email',
+        'post.id',
+        'post.title',
+        'post.detail',
+        'post.createdAt',
+        'post.updatedAt',
+        'author.id AS authorEmail',
+        'author.email',
+        'comments.createdAt',
+        'comments.comment',
+        'comments_user.email',
       ])
-      .where('posts.id = :id', { id })
+      .where('post.id = :id', { id })
       .getOne();
 
     return post;

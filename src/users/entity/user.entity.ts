@@ -3,7 +3,7 @@ import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/common/base.entity';
 import { Comment } from 'src/comment/entity/comment.entity';
 import { Posts } from 'src/posts/entity/posts.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
@@ -23,6 +23,6 @@ export class User extends BaseEntity {
   posts: Posts[];
 
   @ApiHideProperty()
-  @ManyToOne(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
 }

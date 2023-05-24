@@ -5,14 +5,12 @@ import { Posts } from '../../posts/entity/posts.entity';
 
 @Entity()
 export class Comment extends BaseEntity {
-  @ManyToOne(() => User, (user) => user.comments, {
-    eager: true,
-  })
+  @Column('text')
+  comment: string;
+
+  @ManyToOne(() => User, (user) => user.comments, { eager: true })
   user: User;
 
   @ManyToOne(() => Posts, (post) => post.comments)
   post: Posts;
-
-  @Column('text')
-  comment: string;
 }

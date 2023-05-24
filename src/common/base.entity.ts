@@ -14,7 +14,7 @@ export abstract class BaseEntity {
   @ApiProperty({ description: '수정일' })
   updatedAt: Date | null;
 
-  @DeleteDateColumn({ name: 'deleted_at' })
+  @DeleteDateColumn({ name: 'deleted_at', select: false })
   @ApiProperty({ example: null })
   @ApiProperty({ description: '삭제일' })
   deletedAt: Date | null;
