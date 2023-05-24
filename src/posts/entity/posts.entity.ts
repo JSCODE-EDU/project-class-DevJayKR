@@ -3,6 +3,7 @@ import { BaseEntity } from '../../common/base.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { User } from 'src/users/entity/user.entity';
 import { Comment } from 'src/comment/entity/comment.entity';
+import { Likes } from 'src/posts/entity/likes.entity';
 
 @Entity()
 export class Posts extends BaseEntity {
@@ -19,8 +20,12 @@ export class Posts extends BaseEntity {
   author: User;
 
   @ApiHideProperty()
-  @OneToMany(() => Comment, (comment) => comment.post, {})
+  @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
+
+  @ApiHideProperty()
+  @OneToMany(() => Likes, (likes) => likes.post)
+  likes: Likes[];
 
   constructor(id: number, title: string, detail: string, createdAt: Date) {
     super();
