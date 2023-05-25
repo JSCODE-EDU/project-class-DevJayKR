@@ -1,16 +1,19 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Posts } from './entity/posts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsRelations, Like, Relation, RelationOptions, Repository } from 'typeorm';
+import { FindOptionsRelations, Like, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { User } from 'src/users/entity/user.entity';
+import { Likes } from './entity/likes.entity';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Posts)
     private postRepository: Repository<Posts>,
+    @InjectRepository(Likes)
+    private likesRepository: Repository<Likes>,
   ) {}
 
   async isExist(id: number) {
@@ -51,31 +54,67 @@ export class PostsService {
     await this.isExist(id);
 
     const post = await this.postRepository
-      .createQueryBuilder('posts')
-      .leftJoin('posts.author', 'a')
-      .leftJoin('posts.comments', 'c')
-      .innerJoin('c.user', 'cu')
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('post.likes', 'likes')
+      .leftJoinAndSelect('likes.user', 'likes_user')
+      .leftJoinAndSelect('comments.user', 'comments_user')
+      .orderBy('comments.createdAt', 'ASC')
       .select([
-        'posts.id',
-        'posts.title',
-        'posts.detail',
-        'posts.createdAt',
-        'posts.updatedAt',
-        'posts.deletedAt',
-        'a.id',
-        'a.email',
-        'c.createdAt',
-        'c.comment',
-        'cu.id',
-        'cu.email',
+        'post.id',
+        'post.title',
+        'post.detail',
+        'post.createdAt',
+        'post.updatedAt',
+        'author.id AS authorEmail',
+        'author.email',
+        'comments.createdAt',
+        'comments.comment',
+        'comments_user.email',
+        'likes.createdAt',
+        'likes_user.email',
       ])
-      .where('posts.id = :id', { id })
+      //.addSelect('COUNT(likes)', 'likeCount')
+      .where('post.id = :id', { id })
       .getOne();
 
     return post;
   }
 
-  async findOnePostByIdWithRelations(id: number, relationOptions: FindOptionsRelations<Posts>): Promise<Posts> {
+  async likePost(user: User, id: number) {
+    const like = await this.getLike(user, id);
+
+    if (like) {
+      await this.deleteLike(like.id);
+      return {
+        message: '좋아요 취소',
+      };
+    } else {
+      const newLike = this.likesRepository.create({
+        user: user,
+        post: await this.findOnePostById(id),
+      });
+
+      await this.likesRepository.save(newLike);
+
+      return {
+        message: '좋아요 성공',
+      };
+    }
+  }
+
+  async getLike(user: User, id: number) {
+    return await this.likesRepository.findOne({
+      where: { user: { id: user.id }, post: { id } },
+    });
+  }
+
+  async deleteLike(likeId: number) {
+    await this.likesRepository.delete(likeId);
+  }
+
+  async findOnePostByIdWithRelations(id: number, relationOptions?: FindOptionsRelations<Posts>): Promise<Posts> {
     return await this.postRepository.findOne({
       where: {
         id,
@@ -95,14 +134,14 @@ export class PostsService {
       detail,
     });
 
-    return await this.findOnePostById(id);
+    return await this.findOnePostByIdWithRelations(id);
   }
 
   async deletePost(id: number, user: User): Promise<Posts> {
     await this.isExist(id);
     await this.isOwnedPost(id, user.id);
 
-    const post = await this.findOnePostById(id);
+    const post = await this.findOnePostByIdWithRelations(id);
     await this.postRepository.softDelete(id);
 
     return post;
